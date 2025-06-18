@@ -1,3 +1,5 @@
+import lottie from "../src";
+
 /**
  * Icon data in JSON format. This package is optimized to handle icons from [Lordicon](https://lordicon.com/).
  */
@@ -338,4 +340,72 @@ export function updateLottieProperties(
             set(data, property.path, value);
         }
     }
+}
+
+/**
+ * Generate a random hex color.
+ * @returns A random hex color string.
+ */
+export function randomHexColor() {
+    return `#${Math.floor(Math.random() * 16777215).toString(16)}`;
+}
+
+/**
+ * Load icon and initialize lottie instance with customization options.
+ * @param container Container ID.
+ * @param iconName Icon name.
+ * @param properties Icon properties.
+ * @returns Icon instance and utility functions.
+ */
+export async function initIcon(
+    container: string,
+    iconName: string,
+    properties: {
+        colors?: { [key: string]: string },
+        stroke?: number,
+    } = {},
+) {
+    const lottieData = await fetch(`icons/${iconName}.json`)
+        .then(response => response.json());
+
+    const lottieInstance = lottie.loadAnimation({
+        container: typeof container === 'string' ? document.getElementById(container)! : container,
+        loop: true,
+        autoplay: true,
+        animationData: lottieData,
+    });
+
+    const lottieProperties = extractLottieProperties(lottieData, { lottieInstance: true });
+
+    const setColor = (colorName: string, colorValue: string) => {
+        updateLottieProperties(
+            lottieInstance,
+            lottieProperties.filter(c => c.name === colorName),
+            hexToTupleColor(colorValue),
+        );
+    };
+
+    const setStroke = (weight: number) => {
+        updateLottieProperties(
+            lottieInstance,
+            lottieProperties.filter(c => c.name === 'stroke'),
+            weight,
+        );
+    };
+
+    if (properties.stroke) {
+        setStroke(properties.stroke);
+    }
+
+    if (properties.colors) {
+        for (const [colorName, colorValue] of Object.entries(properties.colors)) {
+            setColor(colorName, colorValue);
+        }
+    }
+
+    return {
+        instance: lottieInstance,
+        setColor,
+        setStroke,
+    };
 }

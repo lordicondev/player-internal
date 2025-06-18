@@ -101,6 +101,7 @@ SVGBaseElement.prototype = {
         if (!this.matteMasks) {
             this.matteMasks = {};
         }
+
         if (!this.matteMasks[matteType]) {
             var id = this.layerId + '_' + matteType;
             var filId;
@@ -130,11 +131,12 @@ SVGBaseElement.prototype = {
                 var maskGroup = createNS('mask');
                 maskGroup.setAttribute('id', id);
                 maskGroup.setAttribute('mask-type', 'alpha');
+                maskGroup.setAttribute('maskUnits', 'userSpaceOnUse');
                 var maskGrouper = createNS('g');
                 maskGroup.appendChild(maskGrouper);
                 filId = createElementID();
                 fil = filtersFactory.createFilter(filId);
-                /// /
+
                 var feCTr = createNS('feComponentTransfer');
                 feCTr.setAttribute('in', 'SourceGraphic');
                 fil.appendChild(feCTr);
@@ -142,7 +144,7 @@ SVGBaseElement.prototype = {
                 feFunc.setAttribute('type', 'table');
                 feFunc.setAttribute('tableValues', '1.0 0.0');
                 feCTr.appendChild(feFunc);
-                /// /
+
                 this.globalData.defs.appendChild(fil);
                 var alphaRect = createNS('rect');
                 alphaRect.setAttribute('width', this.comp.data.w);

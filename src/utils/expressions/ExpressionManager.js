@@ -436,7 +436,8 @@ const ExpressionManager = (function () {
         var valueAtTime;
         var velocityAtTime;
 
-        var expression_function = prepareExpression(val);
+        var expression = val;
+        var expression_function = prepareExpression(expression);
         if (!expression_function) {
             return noOp;
         }
@@ -748,13 +749,14 @@ const ExpressionManager = (function () {
                     comp,
                     value,
                     thisComp,
+                    effect,
                 });
 
                 return result?.propType === propTypes.SHAPE
                     ? result.v
                     : result;
             } catch (e) {
-                console.error(e);
+                console.error(expression, e);
             }
 
             // TODO: Check if it's possible to return on ShapeInterface the .v value

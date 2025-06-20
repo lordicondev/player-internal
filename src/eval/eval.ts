@@ -10,18 +10,29 @@ const REGEX_LEGACY_SCALE = /thisComp\.layer\('([^']+)'\)\.effect\('Scale'\)\('Sl
 
 const REGEX_LEGACY_AXIS = /thisComp\.layer\('([^']+)'\)\.effect\('Axis'\)\('Point'\)/;
 
+const REGEX_LEGACY_AXIS_ALT = /effect\('Axis'\)\('Point'\)/;
+
 const REGEX_LEGACY_COLOR = /thisComp\.layer\('([^']+)'\)\.effect\('([^']+)'\)\('Color'\)/;
 
 const REGEX_LEGACY_WATERMARK = /thisComp\.layer\('02092020'\)\.effect\('([^']+)'\)\('([^']+)'\)/;
 
+function fixArgs(args: string[]): string[] {
+    return args.map(arg => {
+        // Remove quotes from the argument if it is a string.
+        if (arg.startsWith("'") && arg.endsWith("'") || arg.startsWith('"') && arg.endsWith('"')) {
+            return arg.slice(1, -1);
+        }
+        return arg;
+    });
+}
+
 export function prepareExpression(
     expr: string,
 ): any {
-
     // Handle color expressions.
     const matchColor = expr.match(REGEX_COLOR);
     if (matchColor) {
-        const args = matchColor.slice(1);
+        const args = fixArgs(matchColor.slice(1));
         return (ctx?: any) => {
             const { comp } = ctx!;
             return comp(args[0]).layer(args[1]).effect(args[2])?.('Color');
@@ -31,7 +42,7 @@ export function prepareExpression(
     // Handle stroke expressions.
     const matchStroke = expr.match(REGEX_STROKE);
     if (matchStroke) {
-        const args = matchStroke.slice(1);
+        const args = fixArgs(matchStroke.slice(1));
         return (ctx?: any) => {
             const { comp, $bm_div, $bm_mul, value } = ctx!;
             return $bm_mul(
@@ -44,7 +55,7 @@ export function prepareExpression(
     // Handle if expressions.
     const matchIf = expr.match(REGEX_IF);
     if (matchIf) {
-        const args = matchIf.slice(1);
+        const args = fixArgs(matchIf.slice(1));
         return (ctx?: any) => {
             const { thisComp } = ctx;
             if (thisComp.layer(args[0]).effect(args[1])('Menu') == +args[2]) {
@@ -58,11 +69,13 @@ export function prepareExpression(
     // Handle legacy layer expressions.
     const matchLegacyLayer = expr.match(REGEX_LEGACY_LAYER);
     if (matchLegacyLayer) {
-        const args = matchLegacyLayer.slice(1);
+        const args = fixArgs(matchLegacyLayer.slice(1));
+
         return (ctx?: any) => {
             const { thisComp, $bm_mul } = ctx!;
+
             return $bm_mul(
-                thisComp.layer(args[0]).effect(+args[1])(args[2]),
+                thisComp.layer(args[0]).effect(args[1])(args[2]),
                 +args[3]
             );
         };
@@ -71,7 +84,7 @@ export function prepareExpression(
     // Handle legacy scale expressions.
     const matchLegacyScale = expr.match(REGEX_LEGACY_SCALE);
     if (matchLegacyScale) {
-        const args = matchLegacyScale.slice(1);
+        const args = fixArgs(matchLegacyScale.slice(1));
         return (ctx?: any) => {
             const { thisComp } = ctx!;
             const value = thisComp.layer(args[0]).effect('Scale')('Slider');
@@ -82,17 +95,27 @@ export function prepareExpression(
     // Handle legacy axis expressions.
     const matchLegacyAxis = expr.match(REGEX_LEGACY_AXIS);
     if (matchLegacyAxis) {
-        const args = matchLegacyAxis.slice(1);
+        const args = fixArgs(matchLegacyAxis.slice(1));
+
         return (ctx?: any) => {
             const { thisComp } = ctx!;
             return thisComp.layer(args[0]).effect('Axis')('Point');
         };
     }
 
+    // Handle legacy axis expressions without layer reference.
+    const matchLegacyAxisAlt = expr.match(REGEX_LEGACY_AXIS_ALT);
+    if (matchLegacyAxisAlt) {
+        return (ctx?: any) => {
+            const { effect } = ctx!;
+            return effect('Axis')('Point');
+        };
+    }
+
     // Handle legacy color expressions.
     const matchLegacyColor = expr.match(REGEX_LEGACY_COLOR);
     if (matchLegacyColor) {
-        const args = matchLegacyColor.slice(1);
+        const args = fixArgs(matchLegacyColor.slice(1));
         return (ctx?: any) => {
             const { thisComp } = ctx!;
             return thisComp.layer(args[0]).effect(args[1])('Color');

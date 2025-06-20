@@ -128,10 +128,16 @@ SVGBaseElement.prototype = {
                     gg.setAttribute('filter', 'url(' + getLocationHref() + '#' + filId + ')');
                 }
             } else if (matteType === 2) {
+                const isFullComp = this.comp.data.w === this.globalData.compSize.w && this.comp.data.h === this.globalData.compSize.h;
+
                 var maskGroup = createNS('mask');
                 maskGroup.setAttribute('id', id);
                 maskGroup.setAttribute('mask-type', 'alpha');
-                maskGroup.setAttribute('maskUnits', 'userSpaceOnUse');
+
+                if (isFullComp) {
+                    maskGroup.setAttribute('maskUnits', 'userSpaceOnUse');
+                }
+
                 var maskGrouper = createNS('g');
                 maskGroup.appendChild(maskGrouper);
                 filId = createElementID();

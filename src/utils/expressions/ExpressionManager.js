@@ -756,7 +756,7 @@ const ExpressionManager = (function () {
                     ? result.v
                     : result;
             } catch (e) {
-                console.error(expression, e);
+                console.error(e, expression);
             }
 
             // TODO: Check if it's possible to return on ShapeInterface the .v value

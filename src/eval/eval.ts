@@ -4,7 +4,7 @@ const REGEX_COLOR = /comp\('([^']+)'\)\.layer\('([^']+)'\)\.effect\('([^']+)'\)\
 
 const REGEX_STROKE = /\$bm_mul\(\$bm_div\(value,\s*([0-9]+(?:\.[0-9]+)?)\),\s*comp\('([^']+)'\)\.layer\('([^']+)'\)\.effect\('([^']+)'\)\('([^']+)'\)\)/;
 
-const REGEX_LEGACY_LAYER = /\$bm_mul\(thisComp\.layer\('([^']+)'\)\.effect\(([^)]+)\)\('([^']+)'\),\s*([0-9]+(?:\.[0-9]+)?)\)/;
+const REGEX_LEGACY_LAYER = /\$bm_mul\(thisComp\.layer\('([^']+)'\)\.effect\((\d+)\)\('([^']+)'\),\s*([0-9]+(?:\.[0-9]+)?)\)/;
 
 const REGEX_LEGACY_SCALE = /thisComp\.layer\('([^']+)'\)\.effect\('Scale'\)\('Slider'\)/;
 
@@ -75,7 +75,7 @@ export function prepareExpression(
             const { thisComp, $bm_mul } = ctx!;
 
             return $bm_mul(
-                thisComp.layer(args[0]).effect(args[1])(args[2]),
+                thisComp.layer(args[0]).effect(+args[1])(args[2]),
                 +args[3]
             );
         };

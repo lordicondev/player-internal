@@ -1,9 +1,19 @@
+import {
+    extendPrototype,
+} from '../utils/functionExtensions';
 import createNS from '../utils/helpers/svg_elements';
+import BaseElement from './BaseElement';
+import FrameElement from './helpers/FrameElement';
+import HierarchyElement from './helpers/HierarchyElement';
+import RenderableDOMElement from './helpers/RenderableDOMElement';
+import TransformElement from './helpers/TransformElement';
+import SVGBaseElement from './svgElements/SVGBaseElement';
 
 function ISolidElement(data, globalData, comp) {
     this.initElement(data, globalData, comp);
 }
-// extendPrototype([IImageElement], ISolidElement);
+
+extendPrototype([BaseElement, TransformElement, SVGBaseElement, HierarchyElement, FrameElement, RenderableDOMElement], ISolidElement);
 
 ISolidElement.prototype.createContent = function () {
     var rect = createNS('rect');

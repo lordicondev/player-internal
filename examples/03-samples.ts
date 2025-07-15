@@ -66,3 +66,7 @@ await initIcon(
     'wired-outline-12-layers-hover-slide',
 );
 
+await initIcon(
+    'icon-9',
+    'wired-outline-884-electric-scooter-hover-pinch',
+);

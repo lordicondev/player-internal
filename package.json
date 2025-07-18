@@ -8,7 +8,6 @@
         "dist"
     ],
     "sideEffects": false,
-    "author": "Lordicon <dev@lordicon.com>",
     "homepage": "https://lordicon.com/",
     "repository": "https://github.com/lordicondev/player-internal",
     "scripts": {
@@ -30,5 +29,6 @@
         "eslint": "^8.54.0",
         "prettier": "^3.2.5"
     },
+    "author": "Lordicon <dev@lordicon.com>",
     "license": "MIT"
 }

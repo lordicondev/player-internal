@@ -1,6 +1,6 @@
 {
     "name": "@lordicon/internal",
-    "version": "0.4.1",
+    "version": "0.5.0",
     "description": "Minimalistic internal animation player.",
     "main": "./dist/index.mjs",
     "types": "./dist/index.d.ts",

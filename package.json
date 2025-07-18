@@ -8,7 +8,7 @@
         "dist"
     ],
     "sideEffects": false,
-    "author": "Marcin Baszczewski <marcin@baszczewski.pl> (https://www.baszczewski.pl/)",
+    "author": "Lordicon <dev@lordicon.com>",
     "homepage": "https://lordicon.com/",
     "repository": "https://github.com/lordicondev/player-internal",
     "scripts": {
